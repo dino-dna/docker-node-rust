@@ -18,12 +18,12 @@ ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
     OPENSSL_STATIC=1
 
-RUN curl https://sh.rustup.rs -sSf | \
-    sh -s -- --default-toolchain stable -y
-
-ENV PATH=/root/.cargo/bin:$PATH
-ENV USER root
 RUN npm install -g neon-cli
-WORKDIR /source
+USER node
+RUN curl https://sh.rustup.rs -sSf | \
+    sh -s -- --default-toolchain stable -y && \
+    echo "source $HOME/.cargo/env" >> "$HOME/.bashrc"
+RUN chmod -R ugo+rw /home/node
+WORKDIR /app
 
 CMD ["bash"]
