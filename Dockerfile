@@ -16,13 +16,16 @@ RUN curl https://www.openssl.org/source/openssl-$SSL_VERSION.tar.gz -O && \
 
 ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
-    OPENSSL_STATIC=1
+    OPENSSL_STATIC=1 \
+    RUSTUP_HOME=/home/node/.rustup
 
 RUN npm install -g neon-cli
 USER node
 RUN curl https://sh.rustup.rs -sSf | \
-    sh -s -- --default-toolchain stable -y && \
-    echo "source $HOME/.cargo/env" >> "$HOME/.bashrc"
+    sh -s -- -y && \
+    echo "source $HOME/.cargo/env" >> "$HOME/.bashrc" \
+    echo "source $HOME/node/.rustup" >> "$HOME/.bashrc" 
+
 RUN chmod -R ugo+rw /home/node
 WORKDIR /app
 
