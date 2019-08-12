@@ -1,11 +1,12 @@
-FROM node
+FROM centos:centos7
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
-    ca-certificates curl file \
-    build-essential \
-    autoconf automake autotools-dev libtool xutils-dev && \
-    rm -rf /var/lib/apt/lists/*
+USER root
+
+ENV CARGO_HOME /home/node/.cargo
+ENV RUSTUP_HOME /home/node/.rustup
+
+RUN yum -y update && yum clean all
+RUN yum -y install git make gcc gcc-c++ libgcc curl openssl openssl-devel ca-certificates tar nodejs which && yum clean all
 
 ENV SSL_VERSION=1.0.2k
 
@@ -14,17 +15,21 @@ RUN curl https://www.openssl.org/source/openssl-$SSL_VERSION.tar.gz -O && \
     cd openssl-$SSL_VERSION && ./config && make depend && make install && \
     cd .. && rm -rf openssl-$SSL_VERSION*
 
+RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+RUN yum -y install nodejs npm; yum clean all
+
 ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
-    OPENSSL_STATIC=1 \
-    RUSTUP_HOME=/home/node/.rustup
+    OPENSSL_STATIC=1
 
+RUN useradd -ms /bin/bash node
 RUN npm install -g neon-cli
 USER node
+
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- -y && \
-    echo "source $HOME/.cargo/env" >> "$HOME/.bashrc" \
-    echo "source $HOME/node/.rustup" >> "$HOME/.bashrc" 
+    echo "source home/node/.cargo/env" >> "$HOME/.bashrc" \
+    echo "source home/node/.rustup" >> "$HOME/.bashrc" 
 
 RUN chmod -R ugo+rw /home/node
 WORKDIR /app
