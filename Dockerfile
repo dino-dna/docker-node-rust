@@ -2,8 +2,8 @@ FROM centos:centos7
 
 USER root
 
-ENV CARGO_HOME /home/node/.cargo
-ENV RUSTUP_HOME /home/node/.rustup
+ENV CARGO_HOME /home/rustnode/.cargo
+ENV RUSTUP_HOME /home/rustnode/.rustup
 
 RUN yum -y update && yum clean all
 RUN yum -y install git make gcc gcc-c++ libgcc curl openssl openssl-devel ca-certificates tar nodejs which && yum clean all
@@ -22,15 +22,14 @@ ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
     OPENSSL_STATIC=1
 
-RUN useradd -ms /bin/bash node
+RUN useradd -ms /bin/bash rustnode
 RUN npm install -g neon-cli
-USER node
+USER rustnode
 
 RUN curl https://sh.rustup.rs -sSf | \
-    sh -s -- -y && \
-    echo "source home/node/.cargo/env" >> "$HOME/.bashrc" 
+    sh -s -- -y 
 
-RUN chmod -R 777 /home/node
+RUN chmod -R 777 /home/rustnode
 WORKDIR /app
 
 CMD ["bash"]
