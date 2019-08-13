@@ -30,7 +30,7 @@ RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- -y && \
     echo "source home/node/.cargo/env" >> "$HOME/.bashrc" 
 
-RUN chmod -R ugo+rw /home/node
+RUN chmod -R 777 /home/node
 WORKDIR /app
 
 CMD ["bash"]
