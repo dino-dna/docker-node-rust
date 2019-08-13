@@ -28,8 +28,7 @@ USER node
 
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- -y && \
-    echo "source home/node/.cargo/env" >> "$HOME/.bashrc" \
-    echo "source home/node/.rustup" >> "$HOME/.bashrc" 
+    echo "source home/node/.cargo/env" >> "$HOME/.bashrc" 
 
 RUN chmod -R ugo+rw /home/node
 WORKDIR /app
